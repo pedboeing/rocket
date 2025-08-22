@@ -14,7 +14,7 @@ def create_task():
     new_task = Task(id=task_id_control ,title=data.get('title'), description=data.get('description', ''))
     task_id_control += 1
     tasks.append(new_task)
-    return jsonify({"message": "Nova tarefa criada com sucesso"})
+    return jsonify({"message": "Nova tarefa criada com sucesso", "id":new_task.id})
 
 # READ
 @app.route('/tasks', methods=['GET'])
@@ -24,7 +24,7 @@ def get_tasks():
         task_list.append(task.to_dict())
 
     output = {
-        "message":task_list,
+        "tasks":task_list,
         "total_tasks":len(task_list)
     }
     
@@ -54,9 +54,9 @@ def update_task(id):
         return jsonify({'message':'Nenhuma tarefa encontrada'}), 404
     
     data = request.get_json()
-    task.title = data['title']
-    task.description = data['description']
-    task.completed = data['completed']
+    task.title = data.get('title', task.title)
+    task.description = data.get('description', task.description)
+    task.completed = data.get('completed', task.completed)
 
     return jsonify({'message':'Tarefa atualizada com sucesso'})
 
